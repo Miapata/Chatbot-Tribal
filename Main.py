@@ -1,4 +1,4 @@
-#Imports
+# Imports
 from chatterbot import ChatBot
 from chatterbot.trainers import ListTrainer
 from chatterbot.trainers import ChatterBotCorpusTrainer
@@ -30,7 +30,7 @@ class Person:
         self.name = name
         self.age = age
 
-# Custom print override
+    # Custom print override
     def __str__(self):
         return "Type: {} [Name: {} | Age: {}]".format(self.__class__.__name__, self.name, self.age)
 
@@ -39,12 +39,13 @@ class Person:
 class Leader(Person):
 
     # Init method that takes a name
-    def __init__(self, first,age):
-        super().__init__(first,age)
+    def __init__(self, first, age):
+        super().__init__(first, age)
 
+# Class for the Chatbot Factory
+class ChatbotFactory:
     # Creates amount of bots
-    def CreateBots(self, amount):
-
+    def CreateBots(amount):
         # Iterate through the range
         for i in range(amount):
             newBot = Civilian(random.choice(firstNameList), 20)  # Create a new bot
@@ -57,11 +58,18 @@ class Leader(Person):
 class Civilian(Person):
 
     # Init method
-    def __init__(self, first,age):
+    def __init__(self, first, age):
+        # Call the base class's init method
         super().__init__(first, age)
 
 
+# Welcome to the program
+print("Welcome to the Chatbot Civilization. This chatbot takes places in a time where huts and villages were the main"
+      " owned properties compared to the houses we have today. This can benefit "
+      "you becasue you can learn how bots repond to eachother dpeending on the data given and the reponses that are put out.")
+
 # Initiate conversation with leader and civilian
+factory = ChatbotFactory
 
 leader = Leader(input("Enter a name for the leader:"), 20)  # Create a new leader
 bot = ChatBot(leader.name)  # Create a new bot from the leader
@@ -69,7 +77,6 @@ bot = ChatBot(leader.name)  # Create a new bot from the leader
 bot.storage.drop()  # Remove all of the original training data
 
 trainer = ListTrainer(bot)  # Create a new trainer
-
 
 # Training data
 trainer.train(["Hello, how are you?", "I'm doing good. There are a lot of things to fix in our village."])
@@ -86,8 +93,7 @@ trainer.train(["I love my family.", "Me too."])
 trainer.train(["John 3:16"])
 
 # Create bots
-leader.CreateBots(int(input("How many bots do you want to make: ")))
-
+factory.CreateBots(int(input("How many bots do you want to make: ")))
 
 # Main loop
 while True:
@@ -101,24 +107,22 @@ while True:
         for i in range(conversationLength):
             # The civilian starts the conversation
             civilian = random.choice(civilianList)  # Create a civilian
+            bot = ChatBot(civilian.name)  # Set the bot to the new civilian
             civilianText = random.choice(responseList)  # Get some random text
             print("{}({}) says: ".format(civilian.name, civilian.__class__.__name__) + civilianText)
-            response = bot.get_response(civilianText)   # Have the leader respond
+            response = bot.get_response(civilianText)  # Have the leader respond
             print("{} says: {} ".format(leader.name, response))
-            sleep(2)
+            sleep(2)  # Sleep for two seconds
 
-
-# If we get 1, the leader starts the conversation
+    # If we get 1, the leader starts the conversation
     if number is 1:
         for i in range(conversationLength):
             civilian = random.choice(civilianList)  # Create a random civilian
             bot = ChatBot(civilian.name)  # Create a chatbot from the civilian
             leaderText = random.choice(responseList)  # Get random text
             print("{} says: {} ".format(leader.name, leaderText))
-            bot.get_response(leaderText)  # Have the civilian respond
-            print("{}({}) says: ".format(civilian.name, civilian.__class__.__name__) + leaderText)
-            sleep(2)
+            response = bot.get_response(leaderText)  # Have the civilian respond
+            print("{}({}) says: {} ".format(civilian.name, civilian.__class__.__name__, response))
+            sleep(2)  # Will sleep fpr 2 seconds
     print("_______________________________")
     print("")
-
-
